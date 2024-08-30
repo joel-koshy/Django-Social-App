@@ -25,7 +25,7 @@ environ.Env.read_env()
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ni_(jpd5#bi-%5@7wes$$l%e2bwd%*48gy5qy1#%s0z5bkwde@'
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -42,6 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework', 
+    'rest_framework.authtoken', 
+    'djoser', 
+    'main', 
+
 ]
 
 MIDDLEWARE = [
@@ -53,7 +58,18 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+}
 
+DJOSER = {
+    "USER_ID_FIELD":"username"
+}
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
@@ -136,3 +152,20 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+    },
+    'staticfiles':{
+        "BACKEND":"django.contrib.staticfiles.storage.StaticFilesStorage", 
+    }
+}
+AWS_ACCESS_KEY_ID=env('BUCKET_ACCESS_KEY') 
+AWS_SECRET_ACCESS_KEY= env('BUCKET_SECRET_ACCESS_KEY')  
+AWS_S3_ENDPOINT_URL = env('BUCKET_ENDPOINT_URL') 
+AWS_STORAGE_BUCKET_NAME= "images"
+AWS_S3_REGION_NAME = "us-east-1"
+AWS_QUERYSTRING_AUTH = False
+AWS_S3_CUSTOM_DOMAIN = env('BUCKET_CUSTOM_DOMAIN')

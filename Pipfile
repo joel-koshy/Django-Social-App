@@ -8,6 +8,12 @@ django = "*"
 gunicorn = "*"
 django-environ = "*"
 psycopg2 = "*"
+djangorestframework = "*"
+djoser = "*"
+supabase = "*"
+pillow = "*"
+boto3 = "*"
+django-storages = {extras = ["s3"], version = "*"}
 
 [dev-packages]
 
