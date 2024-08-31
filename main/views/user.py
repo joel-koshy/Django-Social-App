@@ -4,11 +4,19 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import generics
 
+from django.shortcuts import render
 from django.contrib.auth.models import User
 from ..models import Follow, Post, Save
 from ..serializers import UserSerializer, SavedPostSerializer
 
 from django.shortcuts import get_object_or_404
+
+
+def get_userinfo(request, id): 
+    user_info = get_object_or_404(User, pk=id)
+    serialized_info = UserSerializer(user_info)
+
+    return render(request, 'main/user.html', {"data": serialized_info.data})
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

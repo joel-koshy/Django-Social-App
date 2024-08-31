@@ -1,0 +1,266 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+    User Profile
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .profile-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            text-align: center;
+        }
+
+        .profile-header img {
+            border-radius: 50%;
+            margin-right: 20px;
+            width: 100px;
+            height: 100px;
+        }
+
+        .profile-header .user-info {
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .profile-header .user-info h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .profile-header .user-info p {
+            color: #777;
+            margin: 5px 0 0 0;
+        }
+
+        .profile-header .follow-info {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .profile-header .follow-info span {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            border-bottom: 2px solid #ddd;
+            flex-wrap: wrap;
+        }
+
+        .tabs a {
+            padding: 10px;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            border-bottom: 2px solid transparent;
+            flex: 1;
+            text-align: center;
+            max-width: 200px;
+        }
+
+        .tabs a.active {
+            border-bottom: 2px solid #007bff;
+        }
+
+        .tab-content {
+            margin-top: 20px;
+        }
+
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .posts-grid img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .followers-list, .following-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .followers-list li, .following-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .followers-list img, .following-list img {
+            border-radius: 50%;
+            margin-right: 10px;
+            width: 40px;
+            height: 40px;
+        }
+
+        .followers-list .username, .following-list .username {
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-header img {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            .profile-header .user-info {
+                text-align: center;
+            }
+
+            .profile-header .follow-info {
+                text-align: center;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tabs a {
+                max-width: 100%;
+                border-bottom: 1px solid #ddd;
+                margin-bottom: 5px;
+            }
+
+            .posts-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<!-- {{data}} -->
+    <div class="profile-container">
+        <div class="profile-header">
+            <!-- <img src="{{ user.profile_picture_url }}" alt="User Profile Picture"> -->
+            <div class="user-info">
+                <h2>{{ data.username }}</h2>
+                <!-- <p>{{ user.bio }}</p> -->
+            </div>
+            <div class="follow-info">
+                <span>Followers: {{ data.followers }}</span>
+                <span>Following: {{ user.following_count }}</span>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <a href="#created-posts" class="active" id="created-posts-tab">Created Posts</a>
+            <a href="#saved-posts" id="saved-posts-tab">Saved Posts</a>
+            <a href="#following" id="following-tab">Following</a>
+            <a href="#followers" id="followers-tab">Followers</a>
+        </div>
+
+        <div class="tab-content">
+            <div id="created-posts">
+                <h3>Created Posts</h3>
+                <div class="posts-grid">
+                    {% for post in data.created_posts %}
+                        <a href="../posts/{{post.id}}">
+                            <img src="{{ post.img }}" alt="Post Image">
+                        </a>
+                    {% empty %}
+                        <p>No posts created yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div id="saved-posts" style="display:none;">
+                <h3>Saved Posts</h3>
+                <div class="posts-grid">
+                    {% for post in data.saved_posts %}
+                        <a href="../posts/{{post.id}}">
+                            <img src="{{ post.post.img }}" alt="Post Image">
+                        </a>
+                    {% empty %}
+                        <p>No saved posts yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div id="following" style="display:none;">
+                <h3>Following</h3>
+                <ul class="following-list">
+                    {% for user in following %}
+                        <li>
+                            <img src="{{ user.profile_picture_url }}" alt="{{ user.username }}">
+                            <span class="username">{{ user.username }}</span>
+                        </li>
+                    {% empty %}
+                        <p>Not following anyone yet.</p>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div id="followers" style="display:none;">
+                <h3>Followers</h3>
+                <ul class="followers-list">
+                    {% for user in followers %}
+                        <li>
+                            <img src="{{ user.profile_picture_url }}" alt="{{ user.username }}">
+                            <span class="username">{{ user.username }}</span>
+                        </li>
+                    {% empty %}
+                        <p>No followers yet.</p>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('created-posts-tab').addEventListener('click', function() {
+            showTab('created-posts');
+        });
+        document.getElementById('saved-posts-tab').addEventListener('click', function() {
+            showTab('saved-posts');
+        });
+        document.getElementById('following-tab').addEventListener('click', function() {
+            showTab('following');
+        });
+        document.getElementById('followers-tab').addEventListener('click', function() {
+            showTab('followers');
+        });
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content > div').forEach(div => {
+                div.style.display = 'none';
+            });
+            document.getElementById(tabId).style.display = 'block';
+
+            document.querySelectorAll('.tabs a').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabId + '-tab').classList.add('active');
+        }
+
+        // Show the default tab
+        showTab('created-posts');
+    </script>
+{% endblock %}

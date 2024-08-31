@@ -157,7 +157,7 @@
                 <div class="post-header">
                     <!-- <img src="{{ post.user.profile_picture_url }}" alt="User Profile Picture"> -->
                     
-                    <div class="user-name">{{ post.author.username }}</div>
+                    <a href="../user/{{post.author.id}}" class="user-name">{{ post.author.username }}</a>
                     <a href="{{post.id}}" class="">{{post.title}}</a>
                     <!-- <div class="post-date">{{ post.created_at|date:"F d, Y H:i" }}</div> -->
                 </div>

@@ -6,9 +6,26 @@ class UserSerializer(serializers.ModelSerializer):
     followers = serializers.SerializerMethodField()
     id = serializers.IntegerField(read_only=True)
     password = serializers.CharField(write_only=True)
+
+    created_posts = serializers.SerializerMethodField()
+    saved_posts = serializers.SerializerMethodField()
+
+
     class Meta(): 
         model=User 
-        fields = ['id', 'username', 'email', 'followers', 'password']
+        fields = ['id', 'username', 'email', 'followers', 'password', 'created_posts', 'saved_posts']
+
+    
+    def get_created_posts(self, obj): 
+        created_posts = Post.objects.filter(author=obj.id)
+        serialized_posts = PostSerializer(created_posts, many=True)
+
+        return serialized_posts.data
+
+    def get_saved_posts(self, obj): 
+        saved_posts = Save.objects.filter(user=obj.id)
+        serialized_posts = SavedPostSerializer(saved_posts, many=True)
+        return serialized_posts.data
 
     def get_followers(self, obj): 
         return Follow.objects.filter(user=obj.id).count()
@@ -57,10 +74,10 @@ class SinglePostSerializer(serializers.ModelSerializer):
 
 class SavedPostSerializer(serializers.ModelSerializer): 
     post = PostSerializer(read_only=True)
-    post_id = serializers.IntegerField(write_only=True)
+    # post_id = serializers.IntegerField(write_only=True)
     user = serializers.IntegerField(write_only=True)
     class Meta: 
         model = Save
-        fields = ['post', 'user', 'post_id']
+        fields = ['post', 'user']
 
     
