@@ -23,20 +23,22 @@ class UserSerializer(serializers.ModelSerializer):
         if len(value) <= 5: 
             raise serializers.ValidationError("Password Too Small")
         return value
- 
-    # def validate_username(self, value):
 
-    #         raise serializers.ValidationError("Password Too Small")
-    #     return value
-    
+class UsernameSerializer(serializers.ModelSerializer): 
+    class Meta(): 
+        model=User
+        fields=['username', 'id']
+
 
 class PostSerializer(serializers.ModelSerializer): 
     likes = serializers.IntegerField(read_only=True)
     id = serializers.IntegerField(read_only=True)
+    author = UsernameSerializer(read_only=True)
     class Meta(): 
         model = Post
-        fields = ['id','author', 'likes', 'title', 'img' ]
+        fields = ['id','author', 'likes', 'title', 'img']
 class CommentSerializer(serializers.ModelSerializer): 
+    user = UsernameSerializer(read_only=True)
     class Meta(): 
         model = Comment
         fields = ['user', 'post', 'content']
@@ -44,9 +46,10 @@ class CommentSerializer(serializers.ModelSerializer):
 class SinglePostSerializer(serializers.ModelSerializer): 
     likes = serializers.IntegerField(read_only=True)
     comments = serializers.SerializerMethodField()
+    author = UsernameSerializer(read_only=True)
     class Meta(): 
         model = Post
-        fields = ['author', 'likes', 'title', 'img', 'comments']
+        fields = [ 'author', 'likes', 'title', 'img', 'comments']
     def get_comments(self, obj): 
         items = Comment.objects.filter(post=obj.id)
         serialized_comments = CommentSerializer(items, many=True)

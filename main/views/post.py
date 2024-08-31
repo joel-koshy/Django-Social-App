@@ -39,23 +39,27 @@ def get_create_post(request):
             form=PostForm()
             return render(request, 'main/post.html', {'posts': serialized_posts.data, "form": form})
         else: 
-            return render(request, 'main/post.html', {'posts': serialized_posts.data, "form": None})
+            return render(request, 'main/post.html', {'post': serialized_posts.data, "form": None})
 
 @api_view(['GET', 'POST'])
 def get_comment_single_post(request, pk): 
     if request.method == 'POST' and request.user.is_authenticated:
-        post = get_object_or_404(Post, pk=pk)
-        serialized_post = PostSerializer(post)
-        
-
-        pass 
+        data={
+            "user":request.user.id, 
+            "post":pk, 
+            "content":request.POST.get("content")
+        }
+        deserialized_comment_data = CommentSerializer(data=data)
+        if deserialized_comment_data.is_valid(): 
+            deserialized_comment_data.save()
+            return Response(status.HTTP_200_OK)
+        else: 
+            return Response(status.HTTP_400_BAD_REQUEST)
     elif request.method == 'GET': 
-        pass 
-
-class Single_Post(RetrieveUpdateAPIView): 
-    # permission_classes=[IsAuthenticated]
-    queryset=Post.objects.all()
-    serializer_class = SinglePostSerializer
+        post = get_object_or_404(Post, pk=pk)
+        serialized_post = SinglePostSerializer(post)
+        # print(serialized_post.data)
+        return render(request, 'main/single_post.html', {'post':serialized_post.data})
 
 class Comment(CreateAPIView): 
     # permission_classes=[IsAuthenticated]

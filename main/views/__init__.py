@@ -1,5 +1,5 @@
 from .user import user_info, saved_posts
-from .post import Single_Post, Comment, save, get_create_post, get_comment_single_post
+from .post import Comment, save, get_create_post, get_comment_single_post
 from .authentication import alogin, alogout, create_new_user
 
 from django.shortcuts import render
