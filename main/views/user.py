@@ -10,10 +10,6 @@ from ..serializers import UserSerializer, SavedPostSerializer
 
 from django.shortcuts import get_object_or_404
 
-# class User(generics.ListAPIView): 
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_info(request): 

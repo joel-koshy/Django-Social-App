@@ -1,0 +1,107 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+    Signup
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .login-container {
+            width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .login-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-container label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .login-container input[type="text"],
+        .login-container input[type="email"],
+        .login-container input[type="password"] {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+
+        .login-container button {
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .login-container .error {
+            color: #ff0000;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .login-container .signup-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .login-container .signup-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .login-container .signup-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="login-container">
+        <h2>Sign Up</h2>
+        {% if errors %}
+            <div class="error">
+                {{ errors }}
+            </div>
+        {% endif %}
+        <form method="post" action="../auth/create">
+            {% csrf_token %}
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" required>
+
+
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" required>
+
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required>
+
+            <button type="submit">Sign Up</button>
+        </form>
+        <div class="signup-link">
+            <p>Already have an account? <a href="{%url 'login_page'%}">Login here</a></p>
+        </div>
+    </div>
+{% endblock %}
