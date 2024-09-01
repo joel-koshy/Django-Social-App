@@ -169,7 +169,11 @@
                 <div class="post-actions">
                     <button>Like ({{ post.likes }})</button>
                     <button>Comment</button>
-                    <button>Share</button>
+                    <form class="save_form" method="post" action="{{post.id}}/save" target="_self">
+                        {%csrf_token%}
+                        <input type="submit" value="Save" class="save_button">
+                    </form>
+                    <button id="save-button" post_id="{{post.id}}">Save</button>
                 </div>
             </div>
         {% empty %}
@@ -177,4 +181,52 @@
         {% endfor %}
 
     </div>
+
+    <script>
+        const posts = document.querySelectorAll('.save_form')
+        posts.forEach(function(element) {
+                console.log("hello world")
+                element.addEventListener('submit', function(event){
+                event.preventDefault(); 
+                const formData = new FormData(this); 
+                console.log(formData, formData.get('csrfmiddlewaretoken'))
+                const url = element.getAttribute('action')
+                const button_value = element[1].getAttribute('value')
+                if(button_value.length == 5){
+                    fetch(url, {
+                        method:'DELETE',
+                        headers:{
+                            'Content-Type':'application/json', 
+                            'X-CSRFToken':formData.get('csrfmiddlewaretoken'), 
+                        },
+                        
+                    }).then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                    })
+                    .catch(error =>{
+                        console.error('Error', error); 
+                    })
+
+                    element[1].setAttribute('value', 'Save');            
+                }
+                else{
+                        fetch(url, {
+                            method:'POST', 
+                            body:formData, 
+                        })
+                        .then(response =>response.json())
+                        .then(data =>{
+                            console.log(data); 
+                        })
+                        .catch(error => {
+                            console.error('Error', error); 
+                        });
+
+                    element[1].setAttribute('value', 'Saved');            
+                } 
+               
+            });
+        })
+    </script>
 {% endblock %}

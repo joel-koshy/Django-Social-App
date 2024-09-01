@@ -74,10 +74,10 @@ class SinglePostSerializer(serializers.ModelSerializer):
 
 class SavedPostSerializer(serializers.ModelSerializer): 
     post = PostSerializer(read_only=True)
-    # post_id = serializers.IntegerField(write_only=True)
-    user = serializers.IntegerField(write_only=True)
+    post_id = serializers.IntegerField(write_only=True)
+    # user = serializers.IntegerField(write_only=True)
     class Meta: 
         model = Save
-        fields = ['post', 'user']
+        fields = ['post', 'user', 'post_id']
 
     

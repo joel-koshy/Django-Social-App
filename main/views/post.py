@@ -71,15 +71,22 @@ class Comment(CreateAPIView):
 #     queryset = Save.objects.all()
 #     serializer_class = SavedPostSerializer
 
-@api_view(['POST'])
+@api_view(['POST', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def save(request, id): 
-    serialized_request = SavedPostSerializer(data={'user':request.user.id, 'post_id':id})
-    if not serialized_request.is_valid():
-        return Response(serialized_request.errors,status.HTTP_400_BAD_REQUEST)
-    
-    serialized_request.save()
-    return Response(serialized_request.data, status.HTTP_200_OK)
+    # print(request.body)
+    if request.method == 'POST': 
+        serialized_request = SavedPostSerializer(data={'user':request.user.id, 'post_id':id})
+        if not serialized_request.is_valid():
+            return Response(serialized_request.errors,status.HTTP_400_BAD_REQUEST)
+        
+        serialized_request.save()
+        return Response(serialized_request.data, status.HTTP_200_OK)
+    elif request.method == 'DELETE': 
+        selected_item = get_object_or_404(Save, user=request.user.id, post=id )
+        selected_item.delete()
+        return Response(status.HTTP_204_NO_CONTENT)
+
 
 
 
