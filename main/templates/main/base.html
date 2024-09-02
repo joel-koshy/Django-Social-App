@@ -17,6 +17,8 @@
 
         /* General Styles */
         body {
+            display: flex;
+            justify-content: center;
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             color: #333;
@@ -29,31 +31,39 @@
             padding: 10px 20px;
             text-align: center;
         }
-
+        a {
+            text-decoration: none;
+            color: black;
+        }
+        a:visited{
+            color: black;
+        }
         nav {
+            margin: none;
             display: flex;
+            flex-direction: column;
+            max-width: 20vw;
+            height: 29vh;
             justify-content: center;
             background: #0056b3;
             padding: 10px;
         }
 
         nav a {
-            color: #fff;
-            text-decoration: none;
             margin: 0 15px;
-            font-weight: bold;
         }
 
-        nav a:hover {
+        a:hover {
             color: #ffdd57;
         }
 
         .container {
             width: 45vw;
-            margin: 20px auto;
+            margin: 1vw 0.5vw;
             padding: 20px;
             background: #fff;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
         }
 
         footer {
@@ -88,29 +98,30 @@
     {% endblock %}
 </head>
 <body>
-    <header>
+    
+    <nav class="container">
+ 
         {%if user.is_authenticated%}
         <h1>Hey {{user.username}}</h1>
         {%else%}
-        <h1>Social Media App</h1>
+        <h1>SMA Project</h1>
         {%endif%}
 
-    </header>
-
-    <nav>
         <a href="{%url 'post_page'%}">Home</a>
         <a href="/user/{{user.id}}">Profile</a>
-        <a href="">Messages</a>
-        <a href="">Notifications</a>
         {%if user.is_authenticated%}
         <a href="{%url 'login_page' %}">Logout</a>
         {%else%}
         <a href="{%url 'login_page' %}">Login</a>
         {%endif%}
     </nav>
+    <main>
+
         {% block content %}
         <!-- Content from child templates will be inserted here -->
         {% endblock %}
+    </main>
+
 <!-- 
     <footer>
         <p>&copy; 2024 Social Media App. All rights reserved.</p>

@@ -18,7 +18,7 @@ def get_create_post(request):
     serialized_posts = PostSerializer(queryset, many=True)
     print(request.method)
     if request.method=='POST' and request.user.is_authenticated:
-        # print(request.FILES)
+        print(request.FILES)
         data = {
             "author": request.user.id, 
             "title": request.POST.get("title"), 
@@ -39,7 +39,7 @@ def get_create_post(request):
             form=PostForm()
             return render(request, 'main/post.html', {'posts': serialized_posts.data, "form": form})
         else: 
-            return render(request, 'main/post.html', {'post': serialized_posts.data, "form": None})
+            return render(request, 'main/post.html', {'posts': serialized_posts.data, "form": None})
 
 @api_view(['GET', 'POST'])
 def get_comment_single_post(request, pk): 
@@ -76,12 +76,21 @@ class Comment(CreateAPIView):
 def save(request, id): 
     # print(request.body)
     if request.method == 'POST': 
-        serialized_request = SavedPostSerializer(data={'user':request.user.id, 'post_id':id})
+
+        data = {
+            "user":request.user.id, 
+            "post_id":id, 
+        }    
+        if Save.objects.filter(user=request.user.id, post=id).exists(): 
+            return Response({"message": "Post already Saved"}, status.HTTP_200_OK)
+
+        serialized_request = SavedPostSerializer(data=data)
         if not serialized_request.is_valid():
             return Response(serialized_request.errors,status.HTTP_400_BAD_REQUEST)
         
         serialized_request.save()
-        return Response(serialized_request.data, status.HTTP_200_OK)
+
+        return Response( status.HTTP_200_OK)
     elif request.method == 'DELETE': 
         selected_item = get_object_or_404(Save, user=request.user.id, post=id )
         selected_item.delete()

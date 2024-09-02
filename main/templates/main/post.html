@@ -6,40 +6,44 @@
 
 {% block extra_css %}
     <style>
-        .create-post-container {
-            width: 400px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        .create-post {
+           display: flex;
+           flex-direction: column; 
+           align-items: flex-end;
         }
 
-        .create-post-container h2 {
+        .create-post h2 {
             text-align: center;
             margin-bottom: 20px;
         }
 
-        .create-post-container form {
+        .create-post form {
             display: flex;
             flex-direction: column;
         }
 
-        .create-post-container label {
+        .create-post label {
             margin-bottom: 5px;
             font-weight: bold;
+            width: 100%;
         }
-
-        .create-post-container input[type="file"] {
-            padding: 10px;
+        .create-post div{
+            width: 100%;
+        }
+        .create-post input{
+            width: 100%;
             margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 3px;
             font-size: 16px;
+
         }
 
-        .create-post-container button {
+        .create-post input[type="file"] {
+            padding: 10px;
+                    }
+
+        .create-post button {
             padding: 10px;
             background-color: #007bff;
             color: #fff;
@@ -48,13 +52,14 @@
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s;
+            width: fit-content;
         }
 
-        .create-post-container button:hover {
+        .create-post button:hover {
             background-color: #0056b3;
         }
 
-        .create-post-container .error {
+        .create-post .error {
             color: #ff0000;
             margin-bottom: 15px;
             text-align: center;
@@ -72,7 +77,7 @@
 
         .post-header {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             margin-bottom: 10px;
         }
 
@@ -83,15 +88,16 @@
             height: 50px;
         }
 
-        .post-header .user-name {
+        .post-title{
             font-weight: bold;
         }
-
         .post-header .post-date {
             color: #777;
             margin-left: auto;
         }
-
+        .save_button{
+            display: none;
+        }
         .post-image {
             width: 100%;
             margin-bottom: 15px;
@@ -108,7 +114,11 @@
             display: flex;
             justify-content: space-between;
         }
-
+        .post-actions svg{
+            width: 50px;
+            aspect-ratio: 1;
+            stroke:gray; 
+        }
         .post-actions button {
             background-color: transparent;
             border: none;
@@ -125,27 +135,29 @@
 
 {% block content %}
     {%if user.is_authenticated%}
-    <div class="container">
-        <h2>Create a New Post</h2>
-        <form action="{%url 'post_page'%}" method="post" enctype="multipart/form-data">
-            {%csrf_token%}
-            {{form}}
-            <input type="submit">
-        </form>
-        <!-- {%if form.errors%}
-            <div class="error">
-                Please correct the error(s) below.
-            </div>
-        {% endif %} -->
-<!-- 
-        <form method="post" action="{%url 'post_page'%}" enctype="multipart/form-data">
-            {% csrf_token %}
-            <label for="image">Upload Image</label>
-            <input type="file" name="image" id="image" required>
+        <div class="container">
+            <h2>Create a New Post</h2>
+            <form class="create-post" action="{%url 'post_page'%}" method="post" enctype="multipart/form-data">
+                {%csrf_token%}
+                {{form}}
+                <button type="submit">Post</button>
+            </form>
+            <!-- {%if form.errors%}
+                <div class="error">
+                    Please correct the error(s) below.
+                </div>
+            {% endif %} -->
+    
+            <!-- <form class="create-post" method="post" action="{%url 'post_page'%}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label for="title">Title</label>
+                <input type="text" name="title" id="title" required >
+                <label for="image">Upload Image</label>
+                <input type="file" name="image" id="image" required accept="image/*">
 
-            <button type="submit">Post</button>
-        </form>  -->
-    </div>
+                <button type="submit">Post</button>
+            </form>  -->
+        </div>
     {%endif%}
     <div class="container">
 
@@ -158,7 +170,7 @@
                     <!-- <img src="{{ post.user.profile_picture_url }}" alt="User Profile Picture"> -->
                     
                     <a href="../user/{{post.author.id}}" class="user-name">{{ post.author.username }}</a>
-                    <a href="{{post.id}}" class="">{{post.title}}</a>
+                    <a href="{{post.id}}" class="post-title">{{post.title}}</a>
                     <!-- <div class="post-date">{{ post.created_at|date:"F d, Y H:i" }}</div> -->
                 </div>
 
@@ -167,12 +179,25 @@
                 </div>
 
                 <div class="post-actions">
+                    <?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 6.00019C10.2006 3.90317 7.19377 3.2551 4.93923 5.17534C2.68468 7.09558 2.36727 10.3061 4.13778 12.5772C5.60984 14.4654 10.0648 18.4479 11.5249 19.7369C11.6882 19.8811 11.7699 19.9532 11.8652 19.9815C11.9483 20.0062 12.0393 20.0062 12.1225 19.9815C12.2178 19.9532 12.2994 19.8811 12.4628 19.7369C13.9229 18.4479 18.3778 14.4654 19.8499 12.5772C21.6204 10.3061 21.3417 7.07538 19.0484 5.17534C16.7551 3.2753 13.7994 3.90317 12 6.00019Z"  stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+
                     <button>Like ({{ post.likes }})</button>
                     <button>Comment</button>
                     <form class="save_form" method="post" action="{{post.id}}/save" target="_self">
                         {%csrf_token%}
-                        {{post.saves}}
-                        <input type="submit" value="Save" class="save_button">
+                        <p>
+                            {{post.saves}}
+                        </p>
+                        <label for="save{{post.id}}">
+                            <?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 6.00019C10.2006 3.90317 7.19377 3.2551 4.93923 5.17534C2.68468 7.09558 2.36727 10.3061 4.13778 12.5772C5.60984 14.4654 10.0648 18.4479 11.5249 19.7369C11.6882 19.8811 11.7699 19.9532 11.8652 19.9815C11.9483 20.0062 12.0393 20.0062 12.1225 19.9815C12.2178 19.9532 12.2994 19.8811 12.4628 19.7369C13.9229 18.4479 18.3778 14.4654 19.8499 12.5772C21.6204 10.3061 21.3417 7.07538 19.0484 5.17534C16.7551 3.2753 13.7994 3.90317 12 6.00019Z"  stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </label>
+                        <input type="submit"  class="save_button" id="save{{post.id}}">
                     </form>
                     <button id="save-button" post_id="{{post.id}}">Save</button>
                 </div>
@@ -186,14 +211,16 @@
     <script>
         const posts = document.querySelectorAll('.save_form')
         posts.forEach(function(element) {
-                console.log("hello world")
+                console.log(element)
                 element.addEventListener('submit', function(event){
                 event.preventDefault(); 
                 const formData = new FormData(this); 
-                console.log(formData, formData.get('csrfmiddlewaretoken'))
                 const url = element.getAttribute('action')
-                const button_value = element[1].getAttribute('value')
-                if(button_value.length == 5){
+                const button = element.children[2].children[0]
+                
+                const button_value = button.getAttribute('fill')
+                console.log(button, button_value);
+                if(button_value.length == 3){
                     fetch(url, {
                         method:'DELETE',
                         headers:{
@@ -209,7 +236,7 @@
                         console.error('Error', error); 
                     })
 
-                    element[1].setAttribute('value', 'Save');            
+                    button.setAttribute('fill', 'none');            
                 }
                 else{
                         fetch(url, {
@@ -224,7 +251,7 @@
                             console.error('Error', error); 
                         });
 
-                    element[1].setAttribute('value', 'Saved');            
+                    button.setAttribute('fill', 'red');      
                 } 
                
             });
