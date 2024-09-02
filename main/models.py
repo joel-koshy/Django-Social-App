@@ -52,7 +52,7 @@ class Save(models.Model):
 
 class Follow(models.Model): 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="+")
-    follower = models.OneToOneField(User, on_delete=models.CASCADE)
+    follower = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta: 
         unique_together = (('user'), ('follower'))

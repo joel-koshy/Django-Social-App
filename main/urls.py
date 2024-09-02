@@ -18,6 +18,7 @@ urlpatterns = [
     # path('me/saved', views.saves), 
     # path('me/followed', views.followed), 
 
-    path('user/<int:id>', views.get_userinfo)
+    path('user/<int:id>', views.get_userinfo), 
+    path('user/<int:id>/follow', views.follow), 
 
 ]

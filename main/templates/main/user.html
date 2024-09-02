@@ -162,6 +162,17 @@
             <!-- <img src="{{ user.profile_picture_url }}" alt="User Profile Picture"> -->
             <div class="user-info">
                 <h2>{{ data.username }}</h2>
+                <form id="follow" action="{{data.id}}/follow">
+                    {%csrf_token%}
+                    {%if user.id != data.id%}
+                    <!-- {{is_following}} -->
+                        {%if is_following%}
+                            <input type="submit" value="Unfollow" id="follow_btn">
+                        {%else%}
+                            <input type="submit" value="Follow" id="follow_btn">
+                        {%endif%}
+                    {%endif%}
+                </form>
                 <!-- <p>{{ user.bio }}</p> -->
             </div>
             <div class="follow-info">
@@ -207,10 +218,10 @@
             <div id="following" style="display:none;">
                 <h3>Following</h3>
                 <ul class="following-list">
-                    {% for user in following %}
+                    {% for item in following %}
                         <li>
-                            <img src="{{ user.profile_picture_url }}" alt="{{ user.username }}">
-                            <span class="username">{{ user.username }}</span>
+                            <!-- <img src="{{ user.profile_picture_url }}" alt="{{ user.username }}"> -->
+                            <a href="./{{item.user.id}}" class="username">{{ item.user.username }}</a>
                         </li>
                     {% empty %}
                         <p>Not following anyone yet.</p>
@@ -221,10 +232,10 @@
             <div id="followers" style="display:none;">
                 <h3>Followers</h3>
                 <ul class="followers-list">
-                    {% for user in followers %}
+                    {% for item in data.follower_list %}
                         <li>
-                            <img src="{{ user.profile_picture_url }}" alt="{{ user.username }}">
-                            <span class="username">{{ user.username }}</span>
+                            <!-- <img src="{{ user.profile_picture_url }}" alt="{{ user.username }}"> -->
+                            <a href="./{{item.follower.id}}" class="username">{{ item.follower.username }}</a>
                         </li>
                     {% empty %}
                         <p>No followers yet.</p>
@@ -259,6 +270,49 @@
             });
             document.getElementById(tabId + '-tab').classList.add('active');
         }
+        
+        const follow_form = document.getElementById('follow')
+        const follow_button = document.getElementById('follow_btn')
+        follow_form.addEventListener('submit', function(event){
+            event.preventDefault()
+            const formData = new FormData(this)
+            const url = follow_form.getAttribute('action')
+            let button_value = follow_button.getAttribute('value')
+            if(button_value.length==8){
+                fetch(url, {
+                    method:'DELETE', 
+                    headers:{
+                        'Content-Type':'application/json', 
+                        'X-CSRFTOken':formData.get('csrfmiddlewaretoken'), 
+                    }, 
+                }).then(response => response.json())
+                .then(data => {
+                    console.log(data); 
+                })
+                .catch(error => {
+                    console.error('Error' ,error)
+                })
+
+                follow_button.setAttribute('value', 'Follow');
+
+            }
+            else{
+                fetch(url, {
+                    method:'POST', 
+                    body:formData, 
+                }).then(response => response.json())
+                .then(data => {
+                    console.log(data); 
+                })
+                .catch(error => {
+                    console.error('Error' ,error)
+                })
+
+                follow_button.setAttribute('value', 'Unfollow');
+
+            }
+        })
+
 
         // Show the default tab
         showTab('created-posts');

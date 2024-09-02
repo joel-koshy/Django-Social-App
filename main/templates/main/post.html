@@ -171,6 +171,7 @@
                     <button>Comment</button>
                     <form class="save_form" method="post" action="{{post.id}}/save" target="_self">
                         {%csrf_token%}
+                        {{post.saves}}
                         <input type="submit" value="Save" class="save_button">
                     </form>
                     <button id="save-button" post_id="{{post.id}}">Save</button>

@@ -1,4 +1,4 @@
-from .user import user_info, saved_posts, get_userinfo
+from .user import user_info, saved_posts, get_userinfo, follow
 from .post import Comment, save, get_create_post, get_comment_single_post
 from .authentication import alogin, alogout, create_new_user
 
