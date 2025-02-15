@@ -30,7 +30,7 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['django-social-aw6zpmtvpa-ue.a.run.app', '127.0.0.1', 'localhost' ]
+ALLOWED_HOSTS = ['django-social-473402858503.us-east1.run.app', '127.0.0.1', 'localhost' ]
 
 
 # Application definition 
